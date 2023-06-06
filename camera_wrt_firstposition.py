@@ -94,10 +94,6 @@ def plot3d(rglobal , tglobal):
 
 
 def callback_function(msg ):
-        #print(f)
-        # print("ok")
-        # print(msg)
-        
         cv_image = bridge.imgmsg_to_cv2(msg , desired_encoding="bgr8")
         
         corners, ids, rejected = cv2.aruco.detectMarkers(cv_image , p_dict , parameters = arucoParams)
@@ -107,9 +103,6 @@ def callback_function(msg ):
             rvec , tvec, _ = cv2.aruco.estimatePoseSingleMarkers(corners, markerSizeInCM, matrix, distortion)
             print(rvec.shape)
             R , _ = cv2.Rodrigues(rvec[0])
-            #print(R)
-            #print(tvec[0])
-            #alpha , beta, gamma = cv2.RQDecomp3x3(RR)
             global first_camera_pos
             global pose_ref
             global start_time
@@ -123,13 +116,7 @@ def callback_function(msg ):
                 pose_ref[:3,:3] = R
                 tvecc =  tvec[0].T
                 pose_ref[:3,3:4 ] = tvecc
-                #print(pose_ref)
-                print("suces")
-                 
-                
-                #R_marker_ref = tf.euler_matrix(rvec[0][0][0] , rvec[0][0][1] , rvec[0][0][2] , 'sxyz')
-                #tref = tvec
-            #rvecmatrix = tf.euler_matrix(alpha , beta , gamma , 'rxyz')
+
             tvecT = tvec[0].T
             i = i+1
             pose_i = np.eye(4)
@@ -139,8 +126,6 @@ def callback_function(msg ):
             pose_i = np.linalg.inv(pose_i)
             pose_rel = np.dot(pose_ref, pose_i)
 
-            #pose_rel = pose_rel.T
-            #rmatrix = pose_rel
             x = pose_rel[0][3]
             y = pose_rel[1][3]
             z = pose_rel[2][3]
@@ -163,7 +148,7 @@ def callback_function(msg ):
             ntvec = ntvec.T
             ntvec = np.reshape(ntvec , (1,1,3))
             nrvec , _ = cv2.Rodrigues(nrvec)
-            print(ntvec.shape)
+            #print(ntvec.shape)
             tglobal.append(ntvec)
             rglobal.append(nrvec)
             res = cv2.drawFrameAxes(cv_image, matrix, distortion , rvec, tvec, markerSizeInCM ,  3 )
@@ -182,7 +167,7 @@ def callback_function(msg ):
 	
 
 if __name__ == '__main__':
-    rospy.init_node('my_first_python_node')
+    rospy.init_node('python_node_executing')
     rospy.loginfo("This node has been started")
 rate = rospy.Rate(10)
 
