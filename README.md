@@ -22,19 +22,29 @@ $ pip install -r requirements.txt
 
 ### Setting Up the Environment
 To set up your development environment, follow the steps below:
-1. Clone the repository to your local machine:
+Clone the repository to your local machine:
 
 ```shell
 $ git clone https://github.com/sachin2496/Registering-Objects-using-sensors.git
 ```
-2 . Navigate to the project directory:
+Navigate to the project directory:
 ```shell
 $ cd Registering-Objects-using-sensors
 ```
-3 . Reun this to find the camera caliberation matrix and distortion matrix , for this you need checkeroard 
+Run this to find the camera caliberation matrix and distortion matrix , for this you need 6*8 checkeroard  
 ```shell
 $ python caliberation.py
 ```
+### Estimating Camera Poses from set of images having aruco markers and making a csv file for the poses
+We are here estimating the camera poses with respect to the very first aruco marker . Assuming the markers are in rest position . 
+```shell
+$ python CamerPoses_from_image-Updated.py
+```
+#### Estimating Camera Poses in which input is coming from a  ROS topic of rgb images
+
+
+
+
 
 
 
