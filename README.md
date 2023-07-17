@@ -52,7 +52,7 @@ we can run this python file alone to estimate camera poses , make point clouds a
 $ python Register_withPoses.py
 ```
 
-#### Getting point Cloud of synthetic dataset , use camera poses as a initial estimates and then register them with ICP .
+####  Use camera poses as a initial alignment and then register them with ICP .
 
 
 
