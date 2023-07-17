@@ -49,7 +49,7 @@ $ python Camera_Poses_ROS_Input.py
 ### Getting Point Cloud of synthetic dataset and merge them on the basis of estimated camera Poses
 we can run this python file alone to estimate camera poses , make point clouds and merge them . We will estimate the relative poses of first camera position wrt to ith camera position and pass them as a extrinsic while forming the ith point clouds.
 ```shell
-& python Register_withPoses.py
+$ python Register_withPoses.py
 ```
 
 #### Getting point Cloud of synthetic dataset , use camera poses as a initial estimates and then register them with ICP .
