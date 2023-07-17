@@ -1,20 +1,41 @@
-# Registering Objects using Camera sensors
+## Registering Objects using Camera sensors
 We are registering objects using the camera sensors i.e, by using depth and rgb images .
 <br>
-# Camera Pose estimation using multiple Aruco Markers
+## Camera Pose estimation using multiple Aruco Markers
 We have a Rotating board in which 4 aruco marker are present in corners . Keep id of these markers different and dictionary same . 
 <br>
 <img  width="300" height="200" src="/rgb_0_00000.jpg"  >
 
-# Dataset Used
+## Dataset Used
 We have a synthetic dataset which is captured in blender in which depth and rgb images are present . To download this data  click 
 <a href="https://drive.google.com/drive/folders/1cbPCJaJlYYIZCGvCbXDhjzNIAOOovA0G" > here </a>
 
 
 
-# How to run this code 
+## How to run this code 
 
-# 
+### Installing dependencies
+To install the required packages, run the following command:
+```shell
+$ pip install -r requirements.txt
+```
+
+### Setting Up the Environment
+To set up your development environment, follow the steps below:
+1. Clone the repository to your local machine:
+
+```shell
+$ git clone https://github.com/sachin2496/Registering-Objects-using-sensors.git
+```
+2 . Navigate to the project directory:
+```shell
+$ cd Registering-Objects-using-sensors
+```
+3 . Reun this to find the camera caliberation matrix and distortion matrix , for this you need checkeroard 
+```shell
+$ python caliberation.py
+```
+
 
 
 
