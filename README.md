@@ -41,6 +41,11 @@ We are here estimating the camera poses with respect to the very first aruco mar
 $ python CamerPoses_from_image-Updated.py
 ```
 #### Estimating Camera Poses in which input is coming from a  ROS topic of rgb images
+We are here estimating Camera poses wrt very first aruco marker assuming aruco board in still position ,  subscribing the rgb image topic from the camera sensor . 
+```shell
+$ python Camera_Poses_ROS_Input.py
+```
+
 
 
 
