@@ -53,6 +53,11 @@ $ python Register_withPoses.py
 ```
 
 ####  Use camera poses as a initial alignment and then register them with ICP .
+We are using camera poses with align the point clouds and the use icp to register them so them they converge more efficiently.
+
+```shell
+$ python Register_with_poses_and_icp.py
+```
 
 
 
