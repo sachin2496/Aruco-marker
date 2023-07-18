@@ -58,9 +58,7 @@ def findRelPoses(ids,corners, markerSizeInMt):
             
 
 
-def create_point_cloud_blender(rgb_file, depth_file , extrinsic ):
-
- 
+def create_point_cloud(rgb_file, depth_file , extrinsic ):
 
     depthimg = depth_file
     
@@ -104,11 +102,6 @@ def create_point_cloud_blender(rgb_file, depth_file , extrinsic ):
 
     return pcd
 
-def draw_registration_result_original_color(source, target, transformation):
-    source_temp = copy.deepcopy(source)
-    global combinedpcd
-    source_temp.transform(transformation)
-    combinedpcd =  target + source_temp
 
 
 def registericp(source , target ):
@@ -134,8 +127,11 @@ def registericp(source , target ):
                                                             relative_rmse=1e-6,
                                                             max_iteration=iter))
         current_transformation = result_icp.transformation
-    draw_registration_result_original_color(source, target,
-                                            result_icp.transformation)
+    source_temp = copy.deepcopy(source)
+    global combinedpcd
+    source_temp.transform(result_icp.transformation)
+    combinedpcd =  target + source_temp
+    
 
 
 
@@ -181,11 +177,11 @@ def callback(rgb_image , depthimage ):
            
             relpose = np.dot( np.linalg.inv( poseCamerawrt1 ) , pre)
            
-            pcd = create_point_cloud_blender(rgb_image , depthimage   ,  relpose)
+            pcd = create_point_cloud(rgb_image , depthimage   ,  relpose)
             if iter == 1:
                 combinedpcd = pcd
             else:
-                registericp( pcd  , combinedpcd )
+                registericp(  combinedpcd , pcd )
            
             iter+=1
 
