@@ -57,7 +57,8 @@ $ python Register_withPoses.py
 <p align="center">
 <img  width="300" height="200" src="/Image_with_poses.png"  >
 </p>
-####  Use camera poses as a initial alignment and then register them with ICP .
+
+### Use camera poses as a initial alignment and then register them with coloured ICP .
 We are using camera poses with align the point clouds and the use icp to register them so them they converge more efficiently.
 
 ```shell
@@ -65,7 +66,7 @@ $ python Register_with_poses_and_icp.py
 ```
 
 <p align="center">
-<img  width="300" height="200" src="/Image-ColouredICP.png"  >
+<img  width="300" height="200" src="/Image_ColouredICP.png"  >
 </p>
 
 
