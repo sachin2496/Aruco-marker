@@ -4,7 +4,10 @@ We are registering objects using the camera sensors i.e, by using depth and rgb 
 ## Camera Pose estimation using multiple Aruco Markers
 We have a Rotating board in which 4 aruco marker are present in corners . Keep id of these markers different and dictionary same  and size being 8 cm .
 <br>
+<p align="center">
 <img  width="300" height="200" src="/rgb_0_00000.jpg"  >
+</p>
+
 
 ## Dataset Used
 We have a synthetic dataset which is captured in blender in which depth and rgb images are present . To download this data  click 
@@ -51,6 +54,9 @@ we can run this python file alone to estimate camera poses , make point clouds a
 ```shell
 $ python Register_withPoses.py
 ```
+
+<img  width="300" height="200" src="/Image_with_poses.png"  >
+
 
 ####  Use camera poses as a initial alignment and then register them with ICP .
 We are using camera poses with align the point clouds and the use icp to register them so them they converge more efficiently.
