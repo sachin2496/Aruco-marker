@@ -12,11 +12,11 @@ import glob
 p_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_5X5_250)
 arucoParams = cv2.aruco.DetectorParameters_create()
 
-csvfilename = '/home/machine_visoin/codes/rosws/src/runscript/src/Camera_extrinsics-Newcoke.csv'
+# csvfilename = '/home/machine_visoin/codes/rosws/src/runscript/src/Camera_extrinsics-Newcoke.csv'
 
-with open(csvfilename, 'w' , newline='') as file:
-    writer = csv.writer(file , delimiter='\t')
-    writer.writerow(['Time' , 'X' , 'Y' , 'Z' , 'qx' , 'qy' , 'qz' , 'qw' ])
+# with open(csvfilename, 'w' , newline='') as file:
+#     writer = csv.writer(file , delimiter='\t')
+#     writer.writerow(['Time' , 'X' , 'Y' , 'Z' , 'qx' , 'qy' , 'qz' , 'qw' ])
 
 
 #camera matrix and distortion matrix
@@ -43,31 +43,32 @@ Z = []
 
 def findRelPoses(ids,corners, markerSizeInMt):
     for i in range(len(corners)):
-        for j in range(len(corners)):
+        for j in range(len(corners)):                                                           #iterate through all the markers visible in the frame
                 poseA = np.eye(4)
                 cornersM = np.reshape(corners[i] , (1,1,4,2))
-                rvecA , tvecA, _ = cv2.aruco.estimatePoseSingleMarkers(cornersM, markerSizeInMt, matrix, distortion)
+                rvecA , tvecA, _ = cv2.aruco.estimatePoseSingleMarkers(cornersM, markerSizeInMt, matrix, distortion)            #estimate pose of A wrt Camera 
                 RA, _ = cv2.Rodrigues(rvecA[0])
-                tvecAT = tvecA[0].T
+                tvecAT = tvecA[0].T                                                              #tvec  dimension is (1,1,3)
                 poseA[:3,:3] = RA
                 poseA[:3,3:4] = tvecAT
                 poseB = np.eye(4)
                 cornersM = np.reshape(corners[j] , (1,1,4,2))
-                rvecB , tvecB, _ = cv2.aruco.estimatePoseSingleMarkers(cornersM, markerSizeInMt, matrix, distortion)
+                rvecB , tvecB, _ = cv2.aruco.estimatePoseSingleMarkers(cornersM, markerSizeInMt, matrix, distortion)                 #estimate pose of B wrt Camera
                 RB, _ = cv2.Rodrigues(rvecB[0])
                 tvecBT = tvecB[0].T
                 poseB[:3,:3] = RB
                 poseB[:3,3:4] = tvecBT
-                poseA_wrt_B = np.dot(np.linalg.inv(poseB) , poseA)
-                rel_posedict[(ids[i][0],ids[j][0])] = poseA_wrt_B
-                rel_posedict[(ids[j][0],ids[i][0])] = np.linalg.inv(poseA_wrt_B)
-                eular_angles = tf.euler_from_matrix(poseA_wrt_B, 'rxyz')
-                eular_angles = np.degrees(eular_angles)
+                poseA_wrt_B = np.dot(np.linalg.inv(poseB) , poseA)                                                          #pose of A wrt B is equal to dot product of ( inv of B wrt Camera and A wrt camera)
+                rel_posedict[(ids[i][0],ids[j][0])] = poseA_wrt_B                                                       
+                rel_posedict[(ids[j][0],ids[i][0])] = np.linalg.inv(poseA_wrt_B)                                           #pose of A wrt B is inverse of pose of B wrt A                                   
                 
-                if  (ids[i][0], main_id) in rel_posedict:
-                    rel_posedict[(ids[j][0],main_id)] = np.dot(rel_posedict[(ids[i][0],main_id)] , rel_posedict[(ids[j][0] , ids[i][0]) ])
+                
+
+                if (ids[j][0], main_id) not in rel_posedict and (ids[i][0], main_id) in rel_posedict:
+                    rel_posedict[(ids[j][0],main_id)] = np.dot(rel_posedict[(ids[i][0],main_id)] , rel_posedict[(ids[j][0] , ids[i][0]) ])          #finding relative pose wrt reference marker 
                     rel_posedict[(main_id , ids[j][0])] = np.linalg.inv(rel_posedict[(ids[j][0], main_id)]) 
             
+      
                   
 def createcoordinateframe(position , rotation, size=0.2 ):
     mesh_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size = size , origin = [ 0 , 0 ,0])
@@ -129,32 +130,32 @@ def callback_function(cv_image):
         global pre
         global iter
 
-        markerSizeInMt = .08
+        markerSizeInMt = .08                                                                                                    #size of aruco marker in meters
         if len(corners)  > 0 :
 
             if firstmarker is False:
                 firstmarker = True
-                main_id = ids[0][0]
+                main_id = ids[0][0]                                                                                              #assigning very first aruco as reference marker
             
             
-            findRelPoses(ids=ids, corners=corners , markerSizeInMt=markerSizeInMt)
+            findRelPoses(ids=ids, corners=corners , markerSizeInMt=markerSizeInMt)                                                   #it finds relative poses between aruco markers
 
             
             
             
             poseB = np.eye(4)
-            cornersM = np.reshape(corners[0] , (1,1,4,2))
+            cornersM = np.reshape(corners[0] , (1,1,4,2))                                                                           #estimating pose of nearest marker
             rvecB , tvecB, _ = cv2.aruco.estimatePoseSingleMarkers(cornersM, markerSizeInMt, matrix, distortion)
             RB, _ = cv2.Rodrigues(rvecB[0])
-            tvecBT = tvecB[0].T
+            tvecBT = tvecB[0].T                                                                                                 #tvec  dimension is (1,1,3)
             poseB[:3,:3] = RB
             poseB[:3,3:4] = tvecBT
-            if (main_id,ids[0][0]) not in rel_posedict:
+            if (main_id,ids[0][0]) not in rel_posedict:                                                                        #if relative pose wrt reference marker does not exist
                 cv2.imshow('markedframe' , cv_image)
                 cv2.waitKey(1)
                 return
-            pose1wrtC = np.dot(poseB,rel_posedict[(main_id,ids[0][0])])
-            poseCamerawrt1 = np.linalg.inv(pose1wrtC)
+            pose1wrtC = np.dot(poseB,rel_posedict[(main_id,ids[0][0])])                                                     #POSE OF REFERENCE aruco wrt camera is equal to dot product of pose of current aruco wrt camera and relative pose of reference aruco wrt current one)
+            poseCamerawrt1 = np.linalg.inv(pose1wrtC)                                                                       #camera pose is inverse of aruco pose
             
             curtvec = poseCamerawrt1[:3 , 3:4]
             curtvec = curtvec.T
@@ -180,10 +181,10 @@ def callback_function(cv_image):
             elapsed_time = time.time() - start_time
 
             
-            with open(csvfilename, 'a' , newline='') as file:
-                writer = csv.writer(file , delimiter='\t')
-                row = [elapsed_time , x , y , z , qx, qy , qz , qw ,eular_angles ]
-                writer.writerow(row)
+            # with open(csvfilename, 'a' , newline='') as file:
+            #     writer = csv.writer(file , delimiter='\t')
+            #     row = [elapsed_time , x , y , z , qx, qy , qz , qw ,eular_angles ]
+            #     writer.writerow(row)
                 
             imgmarked = cv2.aruco.drawDetectedMarkers(cv_image.copy() , corners , ids)
             cv2.imshow('markedframe' , imgmarked)
@@ -195,7 +196,7 @@ def callback_function(cv_image):
 
 
 if __name__ == '__main__':
-    dir1 = "/home/machine_visoin/Desktop/object_3d/images/*.jpg"
+    dir1 = "/home/machine_visoin/codes/Sachin/Aruco-data/object_3d_sai/images/*.jpg"
     
 
     imagepaths1 = sorted(glob.glob(dir1) , key=lambda x: int(x.split('_')[-1].split('.')[0]))
