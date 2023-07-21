@@ -12,11 +12,11 @@ import glob
 p_dict = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_5X5_250)
 arucoParams = cv2.aruco.DetectorParameters_create()
 
-# csvfilename = '/home/machine_visoin/codes/rosws/src/runscript/src/Camera_extrinsics-Newcoke.csv'
+csvfilename = 'Camera_extrinsics-Newcoke.csv'
 
-# with open(csvfilename, 'w' , newline='') as file:
-#     writer = csv.writer(file , delimiter='\t')
-#     writer.writerow(['Time' , 'X' , 'Y' , 'Z' , 'qx' , 'qy' , 'qz' , 'qw' ])
+with open(csvfilename, 'w' , newline='') as file:
+    writer = csv.writer(file , delimiter='\t')
+    writer.writerow(['Time' , 'X' , 'Y' , 'Z' , 'qx' , 'qy' , 'qz' , 'qw' ])
 
 
 #camera matrix and distortion matrix
@@ -181,10 +181,10 @@ def callback_function(cv_image):
             elapsed_time = time.time() - start_time
 
             
-            # with open(csvfilename, 'a' , newline='') as file:
-            #     writer = csv.writer(file , delimiter='\t')
-            #     row = [elapsed_time , x , y , z , qx, qy , qz , qw ,eular_angles ]
-            #     writer.writerow(row)
+            with open(csvfilename, 'a' , newline='') as file:
+                writer = csv.writer(file , delimiter='\t')
+                row = [elapsed_time , x , y , z , qx, qy , qz , qw ,eular_angles ]
+                writer.writerow(row)
                 
             imgmarked = cv2.aruco.drawDetectedMarkers(cv_image.copy() , corners , ids)
             cv2.imshow('markedframe' , imgmarked)
